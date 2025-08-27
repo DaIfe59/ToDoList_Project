@@ -1,10 +1,24 @@
-﻿namespace TODOListClient.Models
+﻿using System.Text.Json.Serialization;
+using System.ComponentModel.DataAnnotations;
+
+namespace TODOListClient.Models
 {
     public class TaskItem
     {
-        public int Id { get; set; } // Уникальный идентификатор задачи
-        public string Title { get; set; } // Название задачи
-        public int? CategoryId { get; set; } // Идентификатор категории (может быть null)
-        public Category Category { get; set; } // Связанная категория
+        [JsonPropertyName("id")]
+        public int Id { get; set; }
+
+        [JsonPropertyName("title")]
+        [Required(ErrorMessage = "Title is required")]
+        public string Title { get; set; }
+
+        [JsonPropertyName("category_id")]
+        public int? CategoryId { get; set; }
+
+        [JsonIgnore]
+        public Category Category { get; set; }
     }
 }
+
+
+
