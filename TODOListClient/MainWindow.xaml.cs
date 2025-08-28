@@ -104,6 +104,61 @@ namespace TODOListClient
             }
         }
 
+        //Обработчик нажатия кнопки "Создать категорию"
+        private async void btnAddCategory_Click(object sender, RoutedEventArgs e)
+        {
+            var inputDialog = new TextInputDialog("Введите название категории: ")
+            {
+                Owner = this
+            };
+
+            var ok = inputDialog.ShowDialog() == true;
+            if (!ok) return;
+
+            if (string.IsNullOrWhiteSpace(inputDialog.ResponseText))
+            {
+                MessageBox.Show("Введите название категории!", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            try
+            {
+                var newCategory = new Category { Name = inputDialog.ResponseText.Trim() };
+
+                Console.WriteLine($"Создаём категорию: {newCategory.Name}");
+                await _apiService.AddCategoryAsync(newCategory);
+                Console.WriteLine("Категория успешно создана");
+
+                LoadCategories();
+
+                var all = await _apiService.GetCategoriesAsync();
+                var created = all.FirstOrDefault(c => c.Name == newCategory.Name);
+                if (created != null) cmbCategory.SelectedItem = created;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка при создании категории {ex.Message}");
+                MessageBox.Show($"Ошибка при создании категории: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        // Обработчик нажаитя на кнопку "Удалить категорию"
+        private async void btnDeleteCategory_Click(object sender, RoutedEventArgs e)
+        {
+            var inputDialog = new RemoveCategoryDialog()
+            {
+                Owner = this
+            };
+
+            var ok = inputDialog.ShowDialog() == true;
+            if (!ok)
+            {
+                return;
+            }
+
+            
+        }
+
         // Обработчик нажатия клавиши Enter в текстовом поле
         private void txtTask_KeyDown(object sender, KeyEventArgs e)
         {

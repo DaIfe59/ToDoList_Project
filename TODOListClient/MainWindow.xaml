@@ -1,7 +1,7 @@
 ﻿<Window x:Class="TODOListClient.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="To-Do List" Height="500" Width="900">
+        Title="To-Do List" Height="500" Width="950">
     <Grid>
         <!-- Поле для ввода задачи -->
         <TextBox x:Name="txtTask" 
@@ -35,6 +35,24 @@
                 HorizontalAlignment="Left" 
                 VerticalAlignment="Top" 
                 Click="btnAdd_Click" />
+
+        <!-- Кнопка "Создать категорию" -->
+        <Button Content="Создать категорию" 
+        Width="120" 
+        Height="40" 
+        Margin="770,202,0,0" 
+        HorizontalAlignment="Left" 
+        VerticalAlignment="Top" 
+        Click="btnAddCategory_Click" />
+        
+        <!-- Кнопка "Удалить категорию" -->
+        <Button Content="Удалить категорию"
+                Width="120" 
+                Height="40" 
+                Margin="770,247,0,0" 
+                HorizontalAlignment="Left" 
+                VerticalAlignment="Top" 
+                Click="btnDeleteCategory_Click" />
 
         <!-- Список задач -->
         <ListBox x:Name="listBoxTasks" 

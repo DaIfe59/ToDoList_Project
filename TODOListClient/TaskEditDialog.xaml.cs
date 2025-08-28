@@ -19,9 +19,23 @@ namespace TODOListClient
     /// </summary>
     public partial class TaskEditDialog : Window
     {
+        public string ResponseText { get; private set; }
         public TaskEditDialog()
         {
             InitializeComponent();
+        }
+
+        private void OkButton_Click(object sender, RoutedEventArgs e)
+        {
+            ResponseText = txtInput3.Text;
+            DialogResult = true;
+            Close();
+        }
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = false;
+            Close();
         }
     }
 }

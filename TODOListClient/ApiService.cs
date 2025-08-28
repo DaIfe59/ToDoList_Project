@@ -34,6 +34,13 @@ public class ApiService
         response.EnsureSuccessStatusCode();
     }
 
+    // Удалить категорию
+    public async Task DeleteCategoryAsync(int id)
+    {
+        var response = await _httpClient.DeleteAsync($"api/categories/{id}");
+        response.EnsureSuccessStatusCode();
+    }
+
     // Получить задачи
     public async Task<List<TaskItem>> GetTasksAsync()
     {
@@ -43,10 +50,11 @@ public class ApiService
         return content ?? new List<TaskItem>();
     }
 
-    // Добавить задачу
+    // Добавить задачу (не отправляем Category)
     public async Task AddTaskAsync(TaskItem task)
     {
-        var response = await _httpClient.PostAsJsonAsync("api/Tasks", task, JsonOptions);
+        var payload = new { id = task.Id, title = task.Title, category_id = task.CategoryId };
+        var response = await _httpClient.PostAsJsonAsync("api/Tasks", payload, JsonOptions);
         if (!response.IsSuccessStatusCode)
         {
             var errorContent = await response.Content.ReadAsStringAsync();
@@ -54,10 +62,11 @@ public class ApiService
         }
     }
 
-    // Обновить задачу
+    // Обновить задачу (не отправляем Category)
     public async Task UpdateTaskAsync(int id, TaskItem updatedTask)
     {
-        var response = await _httpClient.PutAsJsonAsync($"api/Tasks/{id}", updatedTask, JsonOptions);
+        var payload = new { id = updatedTask.Id, title = updatedTask.Title, category_id = updatedTask.CategoryId };
+        var response = await _httpClient.PutAsJsonAsync($"api/Tasks/{id}", payload, JsonOptions);
         response.EnsureSuccessStatusCode();
     }
 

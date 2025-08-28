@@ -15,7 +15,6 @@ namespace TODOListServer.Models
         [JsonPropertyName("category_id")]
         public int? CategoryId { get; set; }
 
-        [JsonIgnore]
-        public Category Category { get; set; }
+        public Category? Category { get; set; }
     }
 }
