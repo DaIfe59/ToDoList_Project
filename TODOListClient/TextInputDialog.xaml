@@ -5,8 +5,43 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TODOListClient"
         mc:Ignorable="d"
-        Title="TextInputDialog" Height="450" Width="800">
+        Title="Добавить категорию" Height="230" Width="400"
+         WindowStartupLocation="CenterScreen" Cursor="Hand">
+
     <Grid>
-        
+        <!-- Заголовок -->
+        <TextBlock Text="Введите название новой категории:" 
+           FontSize="12" 
+           FontWeight="Bold" 
+           Foreground="#333333" 
+           Margin="50,29,0,0" 
+           HorizontalAlignment="Left" 
+           VerticalAlignment="Top" />
+
+        <!-- Поле для ввода текста -->
+        <TextBox x:Name="txtInputNameCategory"
+                 Width="300"
+                 Height="30"
+                 Margin="50,50,0,0"
+                 HorizontalAlignment="Left"
+                 VerticalAlignment="Top"/>
+
+        <!-- Кнопка "ОК" -->
+        <Button Content="ОК" 
+        Width="100" 
+        Height="30" 
+        Margin="50,136,0,0" 
+        HorizontalAlignment="Left" 
+        VerticalAlignment="Top" 
+        Click="OkButton_Click" />
+
+        <!-- Кнопка "Отмена" -->
+        <Button Content="Отмена" 
+        Width="100" 
+        Height="30" 
+        Margin="250,136,0,0" 
+        HorizontalAlignment="Left" 
+        VerticalAlignment="Top" 
+        Click="CancelButton_Click" />
     </Grid>
 </Window>

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using TODOListClient.Models;
+using System.Linq; // Added for .Any() and .Select()
 
 namespace TODOListClient
 {
@@ -30,10 +31,18 @@ namespace TODOListClient
             try
             {
                 var categories = await _apiService.GetCategoriesAsync();
+                Console.WriteLine($"Загружено {categories.Count} категорий: {string.Join(", ", categories.Select(c => $"{c.Id}:{c.Name}"))}");
                 cmbCategory.ItemsSource = categories;
+                
+                // Выбираем первую категорию по умолчанию
+                if (categories.Any())
+                {
+                    cmbCategory.SelectedIndex = 0;
+                }
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Ошибка при загрузке категорий: {ex.Message}");
                 MessageBox.Show($"Ошибка при загрузке категорий: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -45,13 +54,18 @@ namespace TODOListClient
             {
                 listBoxTasks.Items.Clear();
                 var tasks = await _apiService.GetTasksAsync();
+                Console.WriteLine($"Загружено {tasks.Count} задач");
+                
                 foreach (var task in tasks)
                 {
-                    listBoxTasks.Items.Add($"{task.Title} ({task.Category?.Name ?? "Без категории"})");
+                    var categoryName = task.Category?.Name ?? "Без категории";
+                    Console.WriteLine($"Задача: {task.Title}, CategoryId: {task.CategoryId}, Category: {categoryName}");
+                    listBoxTasks.Items.Add($"{task.Title} ({categoryName})");
                 }
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Ошибка при загрузке задач: {ex.Message}");
                 MessageBox.Show($"Ошибка при загрузке задач: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -66,22 +80,83 @@ namespace TODOListClient
             }
 
             var category = cmbCategory.SelectedItem as Category;
+            Console.WriteLine($"Выбрана категория: ID={category.Id}, Name={category.Name}");
+            
             var task = new TaskItem
             {
                 Title = txtTask.Text,
                 CategoryId = category.Id
             };
-
+            
+            Console.WriteLine($"Создаем задачу: Title={task.Title}, CategoryId={task.CategoryId}");
+            
             try
             {
                 await _apiService.AddTaskAsync(task);
+                Console.WriteLine("Задача успешно добавлена");
                 LoadData(); // Обновляем список задач
                 txtTask.Clear(); // Очищаем поле ввода
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Ошибка при добавлении задачи: {ex.Message}");
                 MessageBox.Show($"Ошибка при добавлении задачи: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        //Обработчик нажатия кнопки "Создать категорию"
+        private async void btnAddCategory_Click(object sender, RoutedEventArgs e)
+        {
+            var inputDialog = new TextInputDialog("Введите название категории: ")
+            {
+                Owner = this
+            };
+
+            var ok = inputDialog.ShowDialog() == true;
+            if (!ok) return;
+
+            if (string.IsNullOrWhiteSpace(inputDialog.ResponseText))
+            {
+                MessageBox.Show("Введите название категории!", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            try
+            {
+                var newCategory = new Category { Name = inputDialog.ResponseText.Trim() };
+
+                Console.WriteLine($"Создаём категорию: {newCategory.Name}");
+                await _apiService.AddCategoryAsync(newCategory);
+                Console.WriteLine("Категория успешно создана");
+
+                LoadCategories();
+
+                var all = await _apiService.GetCategoriesAsync();
+                var created = all.FirstOrDefault(c => c.Name == newCategory.Name);
+                if (created != null) cmbCategory.SelectedItem = created;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка при создании категории {ex.Message}");
+                MessageBox.Show($"Ошибка при создании категории: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        // Обработчик нажаитя на кнопку "Удалить категорию"
+        private async void btnDeleteCategory_Click(object sender, RoutedEventArgs e)
+        {
+            var inputDialog = new RemoveCategoryDialog()
+            {
+                Owner = this
+            };
+
+            var ok = inputDialog.ShowDialog() == true;
+            if (!ok)
+            {
+                return;
+            }
+
+            
         }
 
         // Обработчик нажатия клавиши Enter в текстовом поле

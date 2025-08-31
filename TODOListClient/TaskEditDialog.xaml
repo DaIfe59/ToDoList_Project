@@ -5,8 +5,41 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TODOListClient"
         mc:Ignorable="d"
-        Title="TaskEditDialog" Height="450" Width="800">
+        Title="Изменение задачи" Height="200" Width="400">
     <Grid>
+        <!-- Заголовок -->
+        <TextBlock Text="Введите новое название задачи:" 
+                   FontSize="12" 
+                   FontWeight="Bold" 
+                   Foreground="#333333" 
+                   Margin="50,29,0,0" 
+                   HorizontalAlignment="Left" 
+                   VerticalAlignment="Top" /> 
         
+        <!-- Поле для ввода текста -->
+        <TextBox x:Name="txtInput3"
+                 Width="300"
+                 Height="30"
+                 Margin="50,50,0,0"
+                 HorizontalAlignment="Left"
+                 VerticalAlignment="Top" />
+        
+        <!-- Кнопка "ОК" -->
+        <Button Content="OK"
+                Width="100"
+                Height="30"
+                Margin="50,136,0,0" 
+                HorizontalAlignment="Left" 
+                VerticalAlignment="Top" />
+        
+        <!-- Кнопка "Отмена"-->
+        <Button Content="Отмена"
+                Width="100"
+                Height="30"
+                Margin="250,136,0,0" 
+                HorizontalAlignment="Left" 
+                VerticalAlignment="Top"/>
+        
+
     </Grid>
 </Window>

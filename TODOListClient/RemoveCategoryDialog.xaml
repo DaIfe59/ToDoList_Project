@@ -5,8 +5,45 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TODOListClient"
         mc:Ignorable="d"
-        Title="RemoveCategoryDialog" Height="450" Width="800">
+        Title="RemoveCategoryDialog" Height="400" Width="800">
+    
     <Grid>
+        
+        <!-- Список категорий -->
+        <ListBox   x:Name="CatListBox"
+            Width="780"
+            Height="261"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top"
+           BorderBrush="Black"
+           BorderThickness="3"
+           Background="#e6ecdf"
+           Foreground="Black"
+           FontSize="20"
+           FontFamily="Microsoft Sans Serif"
+           Padding="10"
+           Margin="0,10,0,0"
+        />
+
+        <!-- Кнопка "Подтвердить" -->
+        <Button Content="Подтвердить"
+                Width="128"
+                Height="43"
+                Margin="10,315,0,0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Click="ConfrimButton_Click"
+        />
+
+        <!--Кнопка "Отменить" -->
+        <Button Content="Отменить"
+                Width="128" 
+                Height="43"
+                Margin="662,315,0,0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Click="CancelButton_Click"
+        />
         
     </Grid>
 </Window>

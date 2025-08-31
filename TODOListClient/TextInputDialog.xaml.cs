@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -19,9 +20,24 @@ namespace TODOListClient
     /// </summary>
     public partial class TextInputDialog : Window
     {
-        public TextInputDialog()
+        private readonly ApiService _apiService;
+        public string ResponseText {  get; private set; }
+        public TextInputDialog(string promt)
         {
             InitializeComponent();
+            Title = promt;
+        }
+        private void OkButton_Click(object sender, RoutedEventArgs e)
+        {
+            ResponseText = txtInputNameCategory.Text;
+            DialogResult = true;
+            Close();
+        }
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = false;
+            Close();
         }
     }
 }
