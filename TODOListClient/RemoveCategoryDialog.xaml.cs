@@ -31,20 +31,24 @@ namespace TODOListClient
             LoadCategories();
         }
 
-        // Обработчик нажатия "Enter" или "delete"
-        private void CatListBox_KeyDown(object sender, KeyEventArgs e)
+        // Обработчик нажатия "Enter" или "Delete"
+        private async void CatListBox_KeyDown(object sender, KeyEventArgs e)
         {
             if ((e.Key == Key.Enter || e.Key == Key.Delete) && !(CatListBox.SelectedItem == null))
             {
-                RemoveCategory();
+                await RemoveCategoryAsync();
             }
         }
 
         //Обработчик кнопки "ОК"
-        private void ConfrimButton_Click(object sender, RoutedEventArgs e)
+        private async void ConfrimButton_Click(object sender, RoutedEventArgs e)
         {
-            RemoveCategory();
-            Close();
+            var success = await RemoveCategoryAsync();
+            if (success)
+            {
+                DialogResult = true;
+                Close();
+            }
         }
 
         //Обработчик кнопки "Отмена"
@@ -55,29 +59,30 @@ namespace TODOListClient
         }
 
         //Метод для удаления категории
-        private async void RemoveCategory()
+        private async Task<bool> RemoveCategoryAsync()
         {
             if (CatListBox.SelectedItem == null)
             {
                 MessageBox.Show("Выберите категорию для удаления!", "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
+                return false;
             }
             try
             {
-                string selectedItem = CatListBox.SelectedItem.ToString();
-                var categories = await _apiService.GetCategoriesAsync();
-                var categoryToRemove = categories.Find(t => t.Name == selectedItem);
-                if (categoryToRemove != null)
+                var selectedCategory = CatListBox.SelectedItem as Models.Category;
+                if (selectedCategory != null)
                 {
-                    await _apiService.DeleteCategoryAsync(categoryToRemove.Id);
+                    await _apiService.DeleteCategoryAsync(selectedCategory.Id);
+                    await Task.Delay(50); // небольшой промежуток, чтобы сервер завершил транзакцию
                     LoadCategories();
+                    return true;
                 }
+                return false;
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Ошибка при удалении категории: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
             }
-            
         }
 
         //

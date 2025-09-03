@@ -38,7 +38,7 @@
 
         <!-- Кнопка "Создать категорию" -->
         <Button Content="Создать категорию" 
-        Width="120" 
+        Width="142" 
         Height="40" 
         Margin="770,202,0,0" 
         HorizontalAlignment="Left" 
@@ -47,7 +47,7 @@
         
         <!-- Кнопка "Удалить категорию" -->
         <Button Content="Удалить категорию"
-                Width="120" 
+                Width="142" 
                 Height="40" 
                 Margin="770,247,0,0" 
                 HorizontalAlignment="Left" 

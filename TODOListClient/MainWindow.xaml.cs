@@ -140,23 +140,25 @@ namespace TODOListClient
                 Console.WriteLine($"Ошибка при создании категории {ex.Message}");
                 MessageBox.Show($"Ошибка при создании категории: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+
+            // После закрытия диалога обновляем категории и задачи
+            LoadCategories();
+            LoadData();
         }
 
-        // Обработчик нажаитя на кнопку "Удалить категорию"
-        private async void btnDeleteCategory_Click(object sender, RoutedEventArgs e)
+        // Обработчик нажатия кнопки "Удалить категорию"
+        private void btnDeleteCategory_Click(object sender, RoutedEventArgs e)
         {
-            var inputDialog = new RemoveCategoryDialog()
+            var dialog = new RemoveCategoryDialog
             {
                 Owner = this
             };
+            var ok = dialog.ShowDialog() == true;
+            if (!ok) return;
 
-            var ok = inputDialog.ShowDialog() == true;
-            if (!ok)
-            {
-                return;
-            }
-
-            
+            // После закрытия диалога обновляем категории и задачи
+            LoadCategories();
+            LoadData();
         }
 
         // Обработчик нажатия клавиши Enter в текстовом поле
@@ -206,5 +208,6 @@ namespace TODOListClient
                 btnRemove_Click(sender, e);
             }
         }
+
     }
 }

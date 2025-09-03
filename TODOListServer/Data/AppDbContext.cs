@@ -16,5 +16,14 @@ namespace TODOListServer.Data
         {
             optionsBuilder.UseSqlite("Data Source=TODOListRemastered_BaseData.db");
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<TaskItem>()
+                .HasOne<Category>(t => t.Category)
+                .WithMany()
+                .HasForeignKey(t => t.CategoryId)
+                .OnDelete(DeleteBehavior.Cascade);
+        }
     }
 }

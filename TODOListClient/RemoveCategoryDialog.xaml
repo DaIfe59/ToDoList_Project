@@ -23,6 +23,9 @@
            FontFamily="Microsoft Sans Serif"
            Padding="10"
            Margin="0,10,0,0"
+           DisplayMemberPath="Name"
+           SelectedValuePath="Id"
+           KeyDown="CatListBox_KeyDown"
         />
 
         <!-- Кнопка "Подтвердить" -->
