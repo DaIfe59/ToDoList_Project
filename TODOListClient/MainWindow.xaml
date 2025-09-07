@@ -1,81 +1,111 @@
 ﻿<Window x:Class="TODOListClient.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:TODOListClient.ViewModels"
         Title="To-Do List" Height="500" Width="950">
+
+    <!--DataContext-->
+    <Window.DataContext>
+        <vm:MainWindowViewModel />
+    </Window.DataContext>
+    
     <Grid>
         <!-- Поле для ввода задачи -->
-        <TextBox x:Name="txtTask" 
-                 Width="300" 
-                 Height="40" 
-                 Margin="10,50,0,0" 
-                 HorizontalAlignment="Left" 
-                 VerticalAlignment="Top"
-                 KeyDown="txtTask_KeyDown" />
+        <TextBox Text="{Binding TaskTitle, UpdateSourceTrigger=PropertyChanged}"
+         Width="300" Height="40" Margin="10,50,0,0"
+         HorizontalAlignment="Left" VerticalAlignment="Top"
+         KeyDown="TextBox_KeyDown" />
 
         <!-- Выбор категории -->
-        <ComboBox x:Name="cmbCategory"
-          Width="150"
-          Height="40"
-          Margin="320,50,0,0"
-          HorizontalAlignment="Left"
-          VerticalAlignment="Top"
-          IsEditable="False">
-            <ComboBox.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding Name}" />
-                </DataTemplate>
-            </ComboBox.ItemTemplate>
-        </ComboBox>
-
-        <!-- Кнопка "Добавить" -->
-        <Button Content="Добавить" 
-                Width="120" 
-                Height="40" 
-                Margin="480,50,0,0" 
-                HorizontalAlignment="Left" 
-                VerticalAlignment="Top" 
-                Click="btnAdd_Click" />
-
-        <!-- Кнопка "Создать категорию" -->
-        <Button Content="Создать категорию" 
-        Width="142" 
-        Height="40" 
-        Margin="770,202,0,0" 
-        HorizontalAlignment="Left" 
-        VerticalAlignment="Top" 
-        Click="btnAddCategory_Click" />
-        
-        <!-- Кнопка "Удалить категорию" -->
-        <Button Content="Удалить категорию"
-                Width="142" 
-                Height="40" 
-                Margin="770,247,0,0" 
-                HorizontalAlignment="Left" 
-                VerticalAlignment="Top" 
-                Click="btnDeleteCategory_Click" />
+        <ComboBox ItemsSource="{Binding Categories}"
+          SelectedItem="{Binding SelectedCategory}"
+          DisplayMemberPath="Name"
+          Width="150" Height="40" Margin="320,50,0,0"
+          HorizontalAlignment="Left" VerticalAlignment="Top" />
 
         <!-- Список задач -->
         <ListBox x:Name="listBoxTasks" 
-                 Width="750" 
-                 Height="300" 
-                 Margin="10,100,0,0" 
-                 HorizontalAlignment="Left" 
-                 VerticalAlignment="Top" 
-                 BorderBrush="#CCCCCC" 
-                 BorderThickness="1" 
-                 Background="White" 
-                 Foreground="#333333" 
-                 FontSize="14" 
-                 Padding="10" 
-                 KeyDown="listBox_KeyDown" />
+         ItemsSource="{Binding Tasks}"
+         SelectedItem="{Binding SelectedTask}"
+         Width="750" 
+         Height="300"
+         DisplayMemberPath="Title"
+         Margin="10,100,0,0" 
+         HorizontalAlignment="Left" 
+         VerticalAlignment="Top" 
+         BorderBrush="#CCCCCC" 
+         BorderThickness="1" 
+         Background="White" 
+         Foreground="#333333" 
+         FontSize="14" 
+         Padding="10" 
+         KeyDown="listBox_KeyDown" />
+
+        <!-- Кнопка "Добавить" -->
+        <Button Content="Добавить"
+        Command="{Binding AddTaskCommand}"
+        IsEnabled="{Binding IsLoading, Converter={StaticResource InverseBooleanConverter}}"
+        Width="120" Height="40" Margin="480,50,0,0"
+        HorizontalAlignment="Left" VerticalAlignment="Top" />
 
         <!-- Кнопка "Удалить" -->
         <Button Content="Удалить" 
+                Command="{Binding DeleteTaskCommand}"
+                IsEnabled="{Binding IsLoading, Converter={StaticResource InverseBooleanConverter}}"
                 Width="120" 
                 Height="40" 
                 Margin="770,100,0,0" 
                 HorizontalAlignment="Left" 
-                VerticalAlignment="Top" 
-                Click="btnRemove_Click" />
+                VerticalAlignment="Top" />
+
+        <!-- Кнопка "Создать категорию" -->
+        <Button Content="Создать категорию" 
+                Command="{Binding AddCategoryCommand}"
+                IsEnabled="{Binding IsLoading, Converter={StaticResource InverseBooleanConverter}}"
+                Width="142" 
+                Height="40" 
+                Margin="770,202,0,0" 
+                HorizontalAlignment="Left" 
+                VerticalAlignment="Top" />
+        
+        <!-- Кнопка "Удалить категорию" -->
+        <Button Content="Удалить категорию"
+                Command="{Binding DeleteCategoryCommand}"
+                IsEnabled="{Binding IsLoading, Converter={StaticResource InverseBooleanConverter}}"
+                Width="142" 
+                Height="40" 
+                Margin="770,247,0,0" 
+                HorizontalAlignment="Left" 
+                VerticalAlignment="Top" />
+
+        <!-- ProgressBar для индикации загрузки -->
+        <ProgressBar IsIndeterminate="True"
+                     Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                     Width="750" 
+                     Height="4" 
+                     Margin="10,410,0,0" 
+                     HorizontalAlignment="Left" 
+                     VerticalAlignment="Top" />
+
+        <!-- Сообщение об ошибке -->
+        <TextBlock Text="{Binding ErrorMessage}"
+                   Foreground="Red"
+                   FontWeight="Bold"
+                   Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}"
+                   Width="750" 
+                   Margin="10,420,0,0" 
+                   HorizontalAlignment="Left" 
+                   VerticalAlignment="Top" />
+
+        <!-- Статусное сообщение -->
+        <TextBlock Text="{Binding StatusMessage}"
+                   Foreground="Green"
+                   FontStyle="Italic"
+                   Visibility="{Binding StatusMessage, Converter={StaticResource StringToVisibilityConverter}}"
+                   Width="750" 
+                   Margin="10,440,0,0" 
+                   HorizontalAlignment="Left" 
+                   VerticalAlignment="Top" />
     </Grid>
 </Window>
+    
