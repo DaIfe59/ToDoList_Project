@@ -27,8 +27,12 @@ namespace TODOListClient
 
         private void OkButton_Click(object sender, RoutedEventArgs e)
         {
-            ResponseText = txtInput3.Text;
-            DialogResult = true;
+            if (!string.IsNullOrWhiteSpace(txtInput3.Text))
+            {
+                ResponseText = txtInput3.Text;
+                DialogResult = true;
+            }
+            else DialogResult = false;
             Close();
         }
 
@@ -36,6 +40,12 @@ namespace TODOListClient
         {
             DialogResult = false;
             Close();
+        }
+
+        private void txtInput3_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.Key == Key.Enter) OkButton_Click((object)sender, e);
+            if(e.Key == Key.Escape) CancelButton_Click((object)sender,e);
         }
     }
 }

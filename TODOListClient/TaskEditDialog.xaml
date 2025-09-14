@@ -22,7 +22,8 @@
                  Height="30"
                  Margin="50,50,0,0"
                  HorizontalAlignment="Left"
-                 VerticalAlignment="Top" />
+                 VerticalAlignment="Top"
+                 KeyDown="txtInput3_KeyDown"/>
         
         <!-- Кнопка "ОК" -->
         <Button Content="OK"
@@ -30,7 +31,8 @@
                 Height="30"
                 Margin="50,136,0,0" 
                 HorizontalAlignment="Left" 
-                VerticalAlignment="Top" />
+                VerticalAlignment="Top"
+                Click="OkButton_Click"/>
         
         <!-- Кнопка "Отмена"-->
         <Button Content="Отмена"
@@ -38,7 +40,8 @@
                 Height="30"
                 Margin="250,136,0,0" 
                 HorizontalAlignment="Left" 
-                VerticalAlignment="Top"/>
+                VerticalAlignment="Top"
+                Click="CancelButton_Click"/>
         
 
     </Grid>

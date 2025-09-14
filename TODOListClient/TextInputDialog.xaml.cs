@@ -12,16 +12,13 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using TODOListClient.ViewModels;
 
 namespace TODOListClient
 {
-    /// <summary>
-    /// Логика взаимодействия для TextInputDialog.xaml
-    /// </summary>
     public partial class TextInputDialog : Window
     {
-        private readonly ApiService _apiService;
-        public string ResponseText {  get; private set; }
+        public string ResponseText { get; private set; }
         public TextInputDialog(string promt)
         {
             InitializeComponent();
@@ -38,6 +35,18 @@ namespace TODOListClient
         {
             DialogResult = false;
             Close();
+        }
+
+        private void Text_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                OkButton_Click(sender, e);
+            }
+            if (e.Key == Key.Escape)
+            {
+                CancelButton_Click(sender, e);
+            }
         }
     }
 }

@@ -3,14 +3,21 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:TODOListClient"
+        xmlns:vm="clr-namespace:TODOListClient.ViewModels"
         mc:Ignorable="d"
         Title="RemoveCategoryDialog" Height="400" Width="800">
-    
+
+    <!--DataContext-->
+    <Window.DataContext>
+        <vm:RemoveCategoryDialogViewModel />
+    </Window.DataContext>
+
     <Grid>
-        
+
         <!-- Список категорий -->
         <ListBox   x:Name="CatListBox"
+            ItemsSource="{Binding Categories}"
+            SelectedItem="{Binding SelectedCategory}"       
             Width="780"
             Height="261"
             HorizontalAlignment="Center"
@@ -30,16 +37,19 @@
 
         <!-- Кнопка "Подтвердить" -->
         <Button Content="Подтвердить"
+                Command="{Binding DeleteCategoryCommand}"
+                IsEnabled="{Binding IsLoading, Converter={StaticResource InverseBooleanConverter}}"
                 Width="128"
                 Height="43"
                 Margin="10,315,0,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top"
-                Click="ConfrimButton_Click"
+                Click="ConfirmButton_Click"
         />
 
         <!--Кнопка "Отменить" -->
         <Button Content="Отменить"
+                IsEnabled="{Binding IsLoading, Converter={StaticResource InverseBooleanConverter}}"
                 Width="128" 
                 Height="43"
                 Margin="662,315,0,0"
@@ -47,6 +57,34 @@
                 VerticalAlignment="Top"
                 Click="CancelButton_Click"
         />
-        
+
+        <!-- ProgressBar для индикации загрузки -->
+        <ProgressBar IsIndeterminate="True"
+             Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+             Width="780" 
+             Height="4" 
+             Margin="0,271,0,0" 
+             HorizontalAlignment="Center" 
+             VerticalAlignment="Top" />
+
+        <!-- Сообщение об ошибке -->
+        <TextBlock Text="{Binding ErrorMessage}"
+            Foreground="Red"
+            FontWeight="Bold"
+            Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}"
+            Width="780" 
+            Margin="0,276,0,0" 
+            HorizontalAlignment="Center" 
+            VerticalAlignment="Top" />
+
+        <!-- Статусное сообщение -->
+        <TextBlock Text="{Binding StatusMessage}"
+            Foreground="Green"
+            FontStyle="Italic"
+            Visibility="{Binding StatusMessage, Converter={StaticResource StringToVisibilityConverter}}"
+            Width="780" 
+            Margin="0,296,0,0" 
+            HorizontalAlignment="Center" 
+            VerticalAlignment="Top" />
     </Grid>
 </Window>
