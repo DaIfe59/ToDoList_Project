@@ -27,27 +27,6 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-// Инициализация базы данных
-using (var scope = app.Services.CreateScope())
-{
-    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    context.Database.EnsureCreated();
-    
-    if (!context.Categories.Any())
-    {
-        var categories = new List<Category>
-        {
-            new Category { Name = "Работа" },
-            new Category { Name = "Личное" },
-            new Category { Name = "Покупки" },
-            new Category { Name = "Здоровье" }
-        };
-        context.Categories.AddRange(categories);
-        context.SaveChanges();
-        Console.WriteLine("Добавлены тестовые категории");
-    }
-}
-
 // Включаем Swagger
 if (app.Environment.IsDevelopment())
 {
