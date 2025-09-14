@@ -24,24 +24,28 @@
                  Height="30"
                  Margin="50,50,0,0"
                  HorizontalAlignment="Left"
-                 VerticalAlignment="Top"/>
+                 VerticalAlignment="Top"
+                 KeyDown="Text_KeyDown"/>
 
         <!-- Кнопка "ОК" -->
         <Button Content="ОК" 
-        Width="100" 
-        Height="30" 
-        Margin="50,136,0,0" 
-        HorizontalAlignment="Left" 
-        VerticalAlignment="Top" 
-        Click="OkButton_Click" />
+                Width="100" 
+                Height="30" 
+                Margin="50,136,0,0" 
+                HorizontalAlignment="Left" 
+                VerticalAlignment="Top" 
+                Click="OkButton_Click"
+                />
 
         <!-- Кнопка "Отмена" -->
         <Button Content="Отмена" 
-        Width="100" 
-        Height="30" 
-        Margin="250,136,0,0" 
-        HorizontalAlignment="Left" 
-        VerticalAlignment="Top" 
-        Click="CancelButton_Click" />
+                Width="100" 
+                Height="30" 
+                Margin="250,136,0,0" 
+                HorizontalAlignment="Left" 
+                VerticalAlignment="Top" 
+                Click="CancelButton_Click"
+                />
+        
     </Grid>
 </Window>

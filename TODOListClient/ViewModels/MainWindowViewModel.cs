@@ -167,21 +167,71 @@ namespace TODOListClient.ViewModels
         [RelayCommand]
         private async Task DeleteCategoryAsync()
         {
-            if (SelectedCategory == null)
+            var dialog = new RemoveCategoryDialog(api)
             {
-                MessageBox.Show("Выберите категорию для удаления!", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
+                Owner = Application.Current.MainWindow
+            };
+
+            var ok = dialog.ShowDialog() == true;
+            if (!ok) return; // Отмена или неуспех — просто выходим
+
+            IsLoading = true;
+            ErrorMessage = string.Empty;
+            StatusMessage = "Обновление данных...";
 
             try
             {
-                await api.DeleteCategoryAsync(SelectedCategory.Id);
-                await LoadCategoriesAsync(); // Обновляем список категорий
-                await LoadTasksAsync(); // Обновляем список задач
+                await LoadCategoriesAsync();
+                await LoadTasksAsync();
+                StatusMessage = "Категория удалена";
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка при удалении категории: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                ErrorMessage = $"Ошибка при обновлении данных: {ex.Message}";
+                StatusMessage = "Ошибка";
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+        }
+
+        // "Изменить задачу"
+        [RelayCommand]
+        private async Task ChangeTaskAsync()
+        {
+            var dialog = new TaskEditDialog()
+            {
+                Owner = Application.Current.MainWindow
+            };
+            if (SelectedTask == null)
+            {
+                ErrorMessage = "Выберите задачу для изменения!";
+                return;
+            }
+            IsLoading = true;
+            ErrorMessage = string.Empty;
+            StatusMessage = "Изменение задачи...";
+            if (SelectedTask != null && dialog.ShowDialog() == true && !string.IsNullOrWhiteSpace(dialog.ResponseText)&& dialog.DialogResult == true)
+            {
+                try
+                {
+                    SelectedTask.Title = dialog.ResponseText;
+                    await api.UpdateTaskAsync(SelectedTask.Id, SelectedTask);
+                    await LoadTasksAsync();
+                    StatusMessage = "Задача изменена успешно";
+                }
+                catch (Exception ex)
+                {
+                    ErrorMessage = $"Ошибка при изменение задачи: {ex.Message}";
+                    StatusMessage = "Ошибка добавления";
+                }
+                finally { IsLoading = false; }
+            }
+            if (dialog.DialogResult == false)
+            {
+                StatusMessage = string.Empty;
+                IsLoading = false;
             }
         }
     }

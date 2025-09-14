@@ -1,17 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
+﻿using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using TODOListClient.ViewModels;
 
 namespace TODOListClient
 {
@@ -25,10 +14,14 @@ namespace TODOListClient
         public RemoveCategoryDialog()
         {
             InitializeComponent();
-            var httpClient = new HttpClient();
-            _apiService = new ApiService(httpClient);
+            DataContext = new RemoveCategoryDialogViewModel();
+        }
 
-            LoadCategories();
+        public RemoveCategoryDialog(ApiService apiService)
+        {
+            InitializeComponent();
+            _apiService = apiService;
+            DataContext = new RemoveCategoryDialogViewModel(_apiService);
         }
 
         // Обработчик нажатия "Enter" или "Delete"
@@ -36,19 +29,9 @@ namespace TODOListClient
         {
             if ((e.Key == Key.Enter || e.Key == Key.Delete) && !(CatListBox.SelectedItem == null))
             {
-                await RemoveCategoryAsync();
+                ConfirmButton_Click(sender, e);
             }
-        }
-
-        //Обработчик кнопки "ОК"
-        private async void ConfrimButton_Click(object sender, RoutedEventArgs e)
-        {
-            var success = await RemoveCategoryAsync();
-            if (success)
-            {
-                DialogResult = true;
-                Close();
-            }
+            if (e.Key == Key.Escape) CancelButton_Click(sender,e);
         }
 
         //Обработчик кнопки "Отмена"
@@ -58,53 +41,22 @@ namespace TODOListClient
             Close();
         }
 
-        //Метод для удаления категории
-        private async Task<bool> RemoveCategoryAsync()
+        // Обработчик кнопки "Подтвердить": дожидаемся выполнения команды VM и только затем закрываем
+        private async void ConfirmButton_Click(object sender, RoutedEventArgs e)
         {
-            if (CatListBox.SelectedItem == null)
+            if (DataContext is RemoveCategoryDialogViewModel vm)
             {
-                MessageBox.Show("Выберите категорию для удаления!", "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return false;
-            }
-            try
-            {
-                var selectedCategory = CatListBox.SelectedItem as Models.Category;
-                if (selectedCategory != null)
+                if (vm.DeleteCategoryCommand is CommunityToolkit.Mvvm.Input.IAsyncRelayCommand asyncCmd)
                 {
-                    await _apiService.DeleteCategoryAsync(selectedCategory.Id);
-                    await Task.Delay(50); // небольшой промежуток, чтобы сервер завершил транзакцию
-                    LoadCategories();
-                    return true;
+                    await asyncCmd.ExecuteAsync(null);
                 }
-                return false;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка при удалении категории: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-                return false;
-            }
-        }
-
-        //
-        private async void LoadCategories()
-        {
-            try
-            {
-                var categories = await _apiService.GetCategoriesAsync();
-                Console.WriteLine($"Загружено {categories.Count} категорий: {string.Join(", ", categories.Select(c => $"{c.Id}:{c.Name}"))}");
-                CatListBox.ItemsSource = categories;
-
-                // Выбираем первую категорию по умолчанию
-                if (categories.Any())
+                else
                 {
-                    CatListBox.SelectedIndex = 0;
+                    vm.DeleteCategoryCommand.Execute(null);
                 }
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Ошибка при загрузке категорий: {ex.Message}");
-                MessageBox.Show($"Ошибка при загрузке категорий: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            DialogResult = true;
+            Close();
         }
     }
 }
