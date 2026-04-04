@@ -14,7 +14,8 @@ namespace TODOListServer.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("Data Source=TODOListRemastered_BaseData.db");
+            optionsBuilder.UseNpgsql(
+    Environment.GetEnvironmentVariable("DB_CONNECTION"));
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

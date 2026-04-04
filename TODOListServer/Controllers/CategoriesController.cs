@@ -58,5 +58,11 @@ namespace TODOListServer.Controllers
             _context.SaveChanges();
             return NoContent();
         }
+        
+        [HttpGet("health")]
+        public IActionResult Health()
+        {
+            return Ok("Healthy");
+        }
     }
 }

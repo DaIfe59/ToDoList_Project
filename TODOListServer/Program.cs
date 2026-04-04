@@ -16,7 +16,9 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 
 // Настройка подключения к базе данных
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite("Data Source=TODOListRemastered_BaseData.db"));
+    options.UseNpgsql(
+    Environment.GetEnvironmentVariable("DB_CONNECTION")
+));
 
 // Настройка Swagger
 builder.Services.AddEndpointsApiExplorer();
@@ -45,6 +47,7 @@ using (var scope = app.Services.CreateScope())
         context.Categories.AddRange(categories);
         context.SaveChanges();
         Console.WriteLine("Добавлены тестовые категории");
+       
     }
 }
 
