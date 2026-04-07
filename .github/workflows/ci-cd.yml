@@ -21,10 +21,10 @@ jobs:
         run: dotnet restore
 
       - name: Build
-        run: dotnet build --no-restore
+        run: dotnet build --no-restore -p:EnableWindowsTargeting=true
 
       - name: Test
-        run: dotnet test
+        run: dotnet test -p:EnableWindowsTargeting=true
 
   build:
     runs-on: ubuntu-latest
