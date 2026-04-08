@@ -23,7 +23,7 @@ jobs:
         run: dotnet build ./TODOListServer/TODOListServer.csproj --no-restore
 
       - name: Run tests
-        run: dotnet test
+        run: dotnet test ./TODOListTests/TODOListTests.csproj
 
 
   build:
