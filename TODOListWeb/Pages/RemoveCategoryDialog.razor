@@ -1,0 +1,118 @@
+﻿@* RemoveCategoryDialog.razor *@
+@using TODOListWeb.Models
+
+@if (IsVisible)
+{
+    <div class="modal-backdrop fade show"></div>
+
+    <div class="modal show d-block" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Удалить категорию</h5>
+                </div>
+
+                <div class="modal-body">
+
+                    @if (Categories?.Any() == true)
+                    {
+                        <ul class="list-group" style="max-height: 260px; overflow-y: auto;">
+                            @foreach (var cat in Categories)
+                            {
+                                <li class="list-group-item @(cat == SelectedCategory ? "active" : "")"
+                                    @onclick="() => SelectedCategory = cat"
+                                    @onkeydown="HandleKeyDown"
+                                    tabindex="0">
+                                    @cat.Name
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p>Нет категорий для удаления.</p>
+                    }
+
+                    @if (!string.IsNullOrEmpty(ErrorMessage))
+                    {
+                        <div class="text-danger mt-2">@ErrorMessage</div>
+                    }
+                    @if (!string.IsNullOrEmpty(StatusMessage))
+                    {
+                        <div class="text-success fst-italic mt-1">@StatusMessage</div>
+                    }
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-primary" @onclick="OnConfirm" disabled="@IsLoading">Подтвердить</button>
+                    <button class="btn btn-secondary" @onclick="OnCancel" disabled="@IsLoading">Отмена</button>
+                </div>
+
+                @if (IsLoading)
+                {
+                    <div class="progress mt-2" style="height: 4px;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 100%"></div>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+}
+
+
+
+@code {
+    [Parameter] public bool IsVisible { get; set; }
+    [Parameter] public List<Category> Categories { get; set; } = new();
+    [Parameter] public EventCallback<Category?> OnCategoryDeleted { get; set; }
+    [Parameter] public EventCallback OnCancelClicked { get; set; }
+
+    private Category? SelectedCategory { get; set; }
+    private bool IsLoading { get; set; } = false;
+    private string ErrorMessage { get; set; } = "";
+    private string StatusMessage { get; set; } = "";
+
+    private async Task OnConfirm()
+    {
+        if (SelectedCategory == null) return;
+
+        IsLoading = true;
+        ErrorMessage = "";
+        StatusMessage = "";
+
+        try
+        {
+            // 🔥 Здесь будет вызов API для удаления категории
+            // await ApiService.DeleteCategoryAsync(SelectedCategory.Id);
+
+            Categories.Remove(SelectedCategory);
+            StatusMessage = $"Категория '{SelectedCategory.Name}' удалена!";
+            await OnCategoryDeleted.InvokeAsync(SelectedCategory);
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    private async Task OnCancel()
+    {
+        await OnCancelClicked.InvokeAsync();
+    }
+
+    private async Task HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (SelectedCategory == null) return;
+
+        if (e.Key == "Enter" || e.Key == "Delete")
+            await OnConfirm();
+        else if (e.Key == "Escape")
+            await OnCancel();
+    }
+}

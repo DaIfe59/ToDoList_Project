@@ -6,21 +6,33 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Настройка сериализации JSON (System.Text.Json)
+// --- Настройка сериализации JSON ---
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-    options.JsonSerializerOptions.PropertyNamingPolicy = null; // используем имена как в атрибутах JsonPropertyName
+    options.JsonSerializerOptions.PropertyNamingPolicy = null; // имена как в атрибутах JsonPropertyName
     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 });
 
-// Настройка подключения к базе данных
+// --- Настройка подключения к базе данных ---
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(
-    Environment.GetEnvironmentVariable("DB_CONNECTION")
-));
+        Environment.GetEnvironmentVariable("DB_CONNECTION")
+    )
+);
 
-// Настройка Swagger
+// --- Настройка CORS для локального Blazor WASM ---
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowBlazorDev",
+        policy => policy
+            .WithOrigins("https://localhost:7120") // адрес твоего Blazor фронтенда
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials());
+});
+
+// --- Настройка Swagger ---
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -29,12 +41,12 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-// Инициализация базы данных
+// --- Инициализация базы данных с тестовыми категориями ---
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     context.Database.EnsureCreated();
-    
+
     if (!context.Categories.Any())
     {
         var categories = new List<Category>
@@ -47,20 +59,21 @@ using (var scope = app.Services.CreateScope())
         context.Categories.AddRange(categories);
         context.SaveChanges();
         Console.WriteLine("Добавлены тестовые категории");
-       
     }
 }
 
-// Включаем Swagger
-//if (app.Environment.IsDevelopment())
-//{
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "ToDoList API v1");
-        c.RoutePrefix = string.Empty;
-    });
-//}
+// --- Включаем Swagger ---
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "ToDoList API v1");
+    c.RoutePrefix = string.Empty;
+});
 
+// --- Включаем CORS ---
+app.UseCors("AllowBlazorDev");
+
+// --- Маршрутизация контроллеров ---
 app.MapControllers();
+
 app.Run();

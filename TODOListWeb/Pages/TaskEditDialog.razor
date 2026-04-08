@@ -1,0 +1,63 @@
+﻿@if (IsVisible)
+{
+    <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Изменение задачи</h5>
+                    <button type="button" class="btn-close" @onclick="Cancel"></button>
+                </div>
+                <div class="modal-body">
+                    <label class="form-label fw-bold" style="color: #333333;">
+                        Введите новое название задачи:
+                    </label>
+                    <input type="text"
+                           class="form-control"
+                           @bind="InputText"
+                           @bind:event="oninput"
+                           @onkeydown="HandleKeyDown"
+                           @ref="inputElement" />
+                </div>
+                <div class="modal-footer justify-content-start">
+                    <button type="button" class="btn btn-primary" style="width: 100px;" @onclick="Ok">OK</button>
+                    <button type="button" class="btn btn-secondary" style="width: 100px; margin-left: 100px;" @onclick="Cancel">Отмена</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private ElementReference inputElement;
+
+    [Parameter] public bool IsVisible { get; set; }
+    [Parameter] public string InitialText { get; set; } = "";
+    [Parameter] public EventCallback<string?> OnClose { get; set; }
+
+    private string InputText { get; set; } = "";
+
+    // При открытии диалога инициализируем текст
+    protected override void OnParametersSet()
+    {
+        if (IsVisible) InputText = InitialText;
+    }
+
+    private async Task Ok()
+    {
+        if (!string.IsNullOrWhiteSpace(InputText))
+        {
+            await OnClose.InvokeAsync(InputText);
+        }
+    }
+
+    private async Task Cancel()
+    {
+        await OnClose.InvokeAsync(null);
+    }
+
+    private async Task HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter") await Ok();
+        if (e.Key == "Escape") await Cancel();
+    }
+}
