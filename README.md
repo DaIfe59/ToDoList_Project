@@ -65,3 +65,32 @@ cd ToDoList_Remastered/TODOListServer
  dotnet tool restore
  dotnet ef database update
 ```
+
+## Лабораторная работа №4 (Nginx Round Robin)
+В проект добавлен отдельный стенд для демонстрации балансировки нагрузки Nginx:
+- `docker-compose.lab4.yml` — поднимает 3 ноды приложения и 1 балансировщик Nginx.
+- `lab4/app` — простое контейнеризованное веб-приложение, которое показывает имя ноды.
+- `lab4/nginx/nginx.conf` — конфигурация Nginx c upstream `backend_pool` и методом Round Robin (по умолчанию).
+
+### Запуск
+```bash
+docker compose -f docker-compose.lab4.yml up --build -d
+```
+
+Откройте в браузере:
+`http://localhost:8081`
+
+При обновлении страницы вы будете видеть по очереди:
+- `Нода 1`
+- `Нода 2`
+- `Нода 3`
+
+### Проверка через консоль (PowerShell)
+```bash
+1..6 | ForEach-Object { (Invoke-WebRequest -Uri http://localhost:8081).Content | Select-String "Нода [1-3]" }
+```
+
+### Остановка
+```bash
+docker compose -f docker-compose.lab4.yml down
+```

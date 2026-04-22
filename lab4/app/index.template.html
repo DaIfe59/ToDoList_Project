@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lab 4 Nginx</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            height: 100vh;
+            display: grid;
+            place-items: center;
+            background: #0f172a;
+            color: #e2e8f0;
+        }
+
+        .card {
+            padding: 32px;
+            border-radius: 16px;
+            background: #1e293b;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+            text-align: center;
+            min-width: 280px;
+        }
+
+        h1 {
+            margin: 0 0 8px;
+            font-size: 34px;
+        }
+
+        p {
+            margin: 0;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>${NODE_NAME}</h1>
+        <p>Nginx Round Robin Demo</p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://www.s1000d.org/S1000D_4-1"
+           xmlns="http://www.s1000d.org/S1000D_4-1"
+           elementFormDefault="qualified">
+
+  <xs:element name="dmodule">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="identAndStatusSection"/>
+        <xs:element ref="contentSection"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="identAndStatusSection">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="dmIdent">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="dmCode">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="modelIdentCode" type="xs:string" fixed="DEPPA"/>
+                    <xs:element name="systemDiffCode" type="xs:string" fixed="A"/>
+                    <xs:element name="systemCode" type="xs:string" fixed="00"/>
+                    <xs:element name="subSystemCode" type="xs:string" fixed="00"/>
+                    <xs:element name="subSubSystemCode" type="xs:string" fixed="00"/>
+                    <xs:element name="assyCode" type="xs:string" fixed="01"/>
+                    <xs:element name="disassyCode" type="xs:string" fixed="00"/>
+                    <xs:element name="disassyCodeVariant" type="xs:string" fixed="A"/>
+                    <xs:element name="infoCode" type="xs:string" fixed="001"/>
+                    <xs:element name="infoCodeVariant" type="xs:string" fixed="A"/>
+                    <xs:element name="itemLocationCode" type="xs:string" fixed="00"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="dmTitle">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="techName" type="xs:string" fixed="Air Pro 2"/>
+                    <xs:element name="infoName" type="xs:string" fixed="Technical Specifications and Operation"/>
+                    <xs:element name="language" type="xs:string" fixed="ru"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="status">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="security" type="xs:string" fixed="01"/>
+              <xs:element name="securityClass" type="xs:string" fixed="01"/>
+              <xs:element name="dataModuleVersion" type="xs:string" fixed="001"/>
+              <xs:element name="dmStatus" type="xs:string" fixed="00"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="contentSection">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="content">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="description" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="para" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+                    <xs:element name="title" type="xs:string" minOccurs="0"/>
+                    <xs:element name="simplePara" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+                    <xs:element name="numberedList" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="numberedItem" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:simpleContent>
+                                <xs:extension base="xs:string">
+                                  <xs:attribute name="number" type="xs:string"/>
+                                </xs:extension>
+                              </xs:simpleContent>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="unorderedList" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="simpleItem" type="xs:string" maxOccurs="unbounded"/>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="simpleTable" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="caption" type="xs:string" minOccurs="0"/>
+                          <xs:element name="thead" minOccurs="0">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="th" type="xs:string" maxOccurs="unbounded"/>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                          <xs:element name="tbody">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="tr" maxOccurs="unbounded">
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="td" type="xs:string" maxOccurs="unbounded"/>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>
